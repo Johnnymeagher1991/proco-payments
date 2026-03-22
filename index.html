@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<!-- VARIANT I â HARD TECH: Rippling mesh. Engineering-first copy. Live settlement feed,
+     protocol architecture stack, p99 latency metrics, audit trust bar. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Proco â Stablecoin Settlement Infrastructure</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#eceae3;
+      --bg2:#e3e0d8;
+      --bg3:#f4f2ee;
+      --ink:#0c0b09;
+      --muted:#7a7870;
+      --dim:#b0ada6;
+      --accent:#b89a72;
+      --green:#16a34a;
+      --green-dim:rgba(22,163,74,.12);
+      --line:rgba(0,0,0,0.08);
+      --dark:#0e0d0b;
+      --mono:'JetBrains Mono',monospace;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+    /* ââ NAV ââ */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 56px;height:58px;background:rgba(236,234,227,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+    .logo{font-size:15px;font-weight:800;letter-spacing:-.5px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:9px}
+    .logo-mark{width:22px;height:22px;background:var(--ink);border-radius:5px;display:inline-flex;align-items:center;justify-content:center}
+    .logo-mark svg{width:12px;height:12px;fill:var(--bg)}
+    .nav-links{display:flex;align-items:center;gap:32px}
+    .nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .nav-links a:hover{color:var(--ink)}
+    .nav-r{display:flex;align-items:center;gap:12px}
+    .ncta-ghost{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;padding:7px 16px;transition:color .15s}
+    .ncta-ghost:hover{color:var(--ink)}
+    .ncta{font-size:13px;font-weight:600;background:var(--ink);color:var(--bg)!important;padding:8px 20px;border-radius:100px;text-decoration:none;transition:opacity .2s}
+    .ncta:hover{opacity:.78}
+
+    /* ââ HERO ââ */
+    .hero{position:relative;width:100%;height:100vh;min-height:700px;overflow:hidden}
+    #cvs-i{position:absolute;inset:0;width:100%;height:100%}
+    .hero-mask-l{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to right,var(--bg) 0%,var(--bg) 32%,rgba(236,234,227,.78) 50%,transparent 68%)}
+    .hero-mask-tb{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(to bottom,var(--bg) 0%,transparent 8%,transparent 88%,var(--bg) 100%)}
+
+    .hero-txt{position:absolute;top:50%;left:56px;transform:translateY(-50%);z-index:10;max-width:500px}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:28px}
+    .ey-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim);font-family:var(--mono)}
+    .ey-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(22,163,74,.4);animation:pulse-ring 2s ease-out infinite}
+    @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(22,163,74,.5)}70%{box-shadow:0 0 0 8px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+
+    h1.hero-h{font-size:clamp(44px,5.4vw,80px);font-weight:900;letter-spacing:-3.5px;line-height:.96;color:var(--ink);margin-bottom:22px}
+    h1.hero-h em{font-style:italic;font-weight:300;color:var(--muted)}
+    .hero-sub{font-size:15px;line-height:1.78;color:var(--muted);margin-bottom:16px;max-width:400px}
+
+    /* Inline technical spec line */
+    .hero-spec{display:flex;align-items:center;gap:16px;margin-bottom:36px;font-family:var(--mono);font-size:11px;color:var(--dim)}
+    .spec-item{display:flex;align-items:center;gap:5px}
+    .spec-val{color:var(--ink);font-weight:600}
+    .spec-sep{color:var(--line)}
+
+    .btns{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-dark{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;background:var(--ink);color:var(--bg);padding:13px 26px;border-radius:100px;text-decoration:none;transition:opacity .2s}
+    .btn-dark:hover{opacity:.75}
+    .btn-ghost{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--muted);border:1px solid var(--line);padding:13px 24px;border-radius:100px;text-decoration:none;transition:all .2s}
+    .btn-ghost:hover{color:var(--ink);border-color:rgba(0,0,0,.18)}
+    .btn-doc{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--dim);text-decoration:none;transition:color .15s;font-family:var(--mono)}
+    .btn-doc:hover{color:var(--ink)}
+
+    /* ââ TRUST STRIP ââ */
+    .trust-strip{display:flex;align-items:center;justify-content:center;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--dark);padding:14px 0;overflow:hidden}
+    .ts-item{display:flex;align-items:center;gap:7px;padding:0 28px;border-right:1px solid rgba(255,255,255,.06);font-size:11px;font-weight:600;font-family:var(--mono);color:#444;flex-shrink:0}
+    .ts-item:last-child{border-right:none}
+    .ts-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;flex-shrink:0}
+    .ts-dot.grey{background:#333}
+
+    /* ââ STAT ROW ââ */
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--line)}
+    .stat{padding:28px 36px;border-right:1px solid var(--line)}
+    .stat:last-child{border-right:none}
+    .sv{font-size:28px;font-weight:900;letter-spacing:-1.8px;color:var(--ink);line-height:1;font-family:var(--mono)}
+    .sv sup{font-size:12px;vertical-align:super;font-weight:700}
+    .sl{font-size:11px;color:var(--muted);margin-top:6px;font-family:var(--mono)}
+    .sd{font-size:10px;color:var(--dim);margin-top:3px}
+
+    /* ââ SECTION BASE ââ */
+    .sec{padding:96px 56px;border-bottom:1px solid var(--line)}
+    .con{max-width:1120px;margin:0 auto}
+    .sec-tag{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim);margin-bottom:20px;font-family:var(--mono)}
+    .sec-comment{font-size:11px;color:var(--dim);font-family:var(--mono);margin-bottom:48px;opacity:.7}
+    h2.sh{font-size:clamp(28px,3.6vw,50px);font-weight:900;letter-spacing:-2.5px;line-height:1.04;color:var(--ink);margin-bottom:16px}
+    p.sl-p{font-size:15px;line-height:1.8;color:var(--muted);max-width:480px}
+
+    /* ââ LIVE FEED ââ */
+    .feed-wrap{margin-top:64px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+    .feed-terminal{background:var(--dark);border-radius:12px;overflow:hidden;font-family:var(--mono)}
+    .feed-bar{display:flex;align-items:center;gap:6px;padding:12px 18px;background:#161410;border-bottom:1px solid rgba(255,255,255,.05)}
+    .feed-bar-dot{width:9px;height:9px;border-radius:50%}
+    .fb-r{background:#ff5f56}.fb-y{background:#ffbd2e}.fb-g{background:#27c93f}
+    .feed-label{font-size:11px;color:#3a3834;margin-left:10px}
+    .feed-live{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:10px;color:#22c55e}
+    .feed-pulse{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:pulse-ring 1.5s ease-out infinite}
+    .feed-rows{padding:16px 0;min-height:260px}
+    .feed-row{display:flex;align-items:center;gap:0;padding:7px 18px;font-size:11px;border-bottom:1px solid rgba(255,255,255,.03);animation:fadeIn .4s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .fr-chain{color:#6b9cff;width:48px;flex-shrink:0}
+    .fr-hash{color:#3a3834;width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+    .fr-country{color:#555;width:36px;flex-shrink:0}
+    .fr-amt{color:#ccc;text-align:right;flex:1;font-weight:500}
+    .fr-ms{color:#22c55e;width:64px;text-align:right;flex-shrink:0}
+    .fr-dot{width:5px;height:5px;border-radius:50%;background:#22c55e;margin-left:12px;flex-shrink:0}
+
+    .feed-points{display:flex;flex-direction:column;gap:28px;padding-top:8px}
+    .fp{display:flex;flex-direction:column;gap:6px}
+    .fp-top{display:flex;align-items:baseline;gap:10px}
+    .fp-val{font-size:36px;font-weight:900;letter-spacing:-2.5px;color:var(--ink);font-family:var(--mono)}
+    .fp-unit{font-size:12px;color:var(--dim);font-family:var(--mono)}
+    .fp-lbl{font-size:13px;color:var(--muted)}
+    .fp-sub{font-size:11px;color:var(--dim);font-family:var(--mono)}
+
+    /* ââ PROTOCOL STACK ââ */
+    .stack-wrap{margin-top:64px;display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:center}
+    .stack{display:flex;flex-direction:column;gap:1px}
+    .stack-layer{padding:20px 28px;display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--line);transition:background .2s}
+    .stack-layer:first-child{border-radius:10px 10px 0 0}
+    .stack-layer:last-child{border-radius:0 0 10px 10px}
+    .stack-layer:hover{background:var(--bg3)}
+    .sl-num{font-size:10px;font-weight:700;color:var(--dim);font-family:var(--mono);width:20px;flex-shrink:0}
+    .sl-bar{width:3px;height:32px;border-radius:2px;flex-shrink:0}
+    .sl-bar.yours{background:#6b9cff}
+    .sl-bar.proco{background:var(--ink)}
+    .sl-bar.chain{background:#c49b6e}
+    .sl-bar.settle{background:#22c55e}
+    .sl-txt h4{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.2px;font-family:var(--mono)}
+    .sl-txt p{font-size:12px;color:var(--muted);margin-top:2px}
+    .sl-badge{margin-left:auto;font-size:10px;font-weight:600;font-family:var(--mono);color:var(--dim);background:var(--bg);border:1px solid var(--line);padding:3px 8px;border-radius:4px;flex-shrink:0}
+
+    .stack-connector{display:flex;align-items:center;justify-content:flex-start;padding:0 28px;height:16px;position:relative}
+    .sc-line{width:1px;height:16px;background:var(--dim);opacity:.3;margin-left:26px}
+
+    .stack-points{display:flex;flex-direction:column;gap:24px}
+    .spt{display:flex;flex-direction:column;gap:5px}
+    .spt-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:var(--mono)}
+    .spt h3{font-size:20px;font-weight:800;letter-spacing:-.8px;color:var(--ink)}
+    .spt p{font-size:13px;line-height:1.75;color:var(--muted)}
+
+    /* ââ ALTERNATING USE CASES ââ */
+    .uc-sec{padding:0;border-bottom:none}
+    .uc-list{display:flex;flex-direction:column}
+    .uc{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+    .uc:first-child{border-top:1px solid var(--line)}
+    .uc-txt{padding:60px 56px;display:flex;flex-direction:column;justify-content:center}
+    .uc-vis{background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:280px;overflow:hidden;padding:40px}
+    .uc:nth-child(even) .uc-txt{order:2}
+    .uc:nth-child(even) .uc-vis{order:1}
+    .uc-n{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim);margin-bottom:18px;font-family:var(--mono)}
+    .uc h3{font-size:clamp(20px,2.4vw,32px);font-weight:900;letter-spacing:-1.5px;color:var(--ink);margin-bottom:14px;line-height:1.08}
+    .uc p{font-size:14px;line-height:1.82;color:var(--muted)}
+    .uc-spec{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+    .uc-chip{font-size:10px;font-weight:600;font-family:var(--mono);color:var(--ink);background:var(--bg3);border:1px solid var(--line);padding:5px 10px;border-radius:5px}
+
+    /* UC Visualizations */
+    .payroll-table{width:100%;max-width:340px}
+    .pt-head{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:0 0 10px;border-bottom:1px solid var(--line);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-family:var(--mono)}
+    .pt-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.04);align-items:center}
+    .pt-name{font-size:12px;font-weight:600;color:var(--ink)}
+    .pt-loc{font-size:10px;color:var(--dim);margin-top:1px;font-family:var(--mono)}
+    .pt-amt{font-size:12px;font-weight:700;color:var(--ink);font-family:var(--mono)}
+    .pt-status{font-size:9px;font-weight:700;font-family:var(--mono);color:#22c55e;background:rgba(34,197,94,.1);padding:2px 7px;border-radius:3px}
+    .pt-status.pending{color:var(--accent);background:rgba(200,160,130,.12)}
+
+    .compliance-stack{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px}
+    .cs-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg3);border:1px solid var(--line);border-radius:8px}
+    .cs-check{width:18px;height:18px;border-radius:50%;background:rgba(34,197,94,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .cs-check svg{width:9px;height:9px;stroke:#22c55e;fill:none;stroke-width:2.5}
+    .cs-lbl{font-size:12px;font-weight:600;color:var(--ink);flex:1}
+    .cs-tag{font-size:9px;font-weight:600;font-family:var(--mono);color:var(--dim)}
+
+    .arch-diagram{display:flex;flex-direction:column;gap:2px;width:100%;max-width:280px}
+    .ad-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:6px;border:1px solid var(--line);background:var(--bg3)}
+    .ad-row.highlight{background:var(--ink);border-color:var(--ink)}
+    .ad-icon{width:28px;height:28px;border-radius:5px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ad-icon.dark{background:rgba(255,255,255,.06)}
+    .ad-icon.light{background:var(--bg2);border-color:var(--line)}
+    .ad-icon svg{width:12px;height:12px;stroke:#888;fill:none;stroke-width:1.5}
+    .ad-icon.dark svg{stroke:#666}
+    .ad-txt{font-size:12px;font-weight:600;color:var(--ink)}
+    .ad-row.highlight .ad-txt{color:#fff}
+    .ad-sub{font-size:10px;color:var(--muted);font-family:var(--mono)}
+    .ad-row.highlight .ad-sub{color:#555}
+    .ad-conn{display:flex;padding:0 14px;height:16px;align-items:center}
+    .ad-line{width:1px;height:100%;background:var(--dim);opacity:.3;margin-left:13px}
+
+    /* ââ DARK PLATFORM ââ */
+    .platform{background:var(--dark);padding:96px 56px}
+    .platform .sec-tag{color:#2e2c29}
+    .platform h2.sh{color:#fff}
+    .platform p.sl-p{color:#52504c;max-width:480px}
+    .pgrid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;border-top:1px solid rgba(255,255,255,.05);border-left:1px solid rgba(255,255,255,.05)}
+    .pcard{padding:36px 28px;border-right:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)}
+    .pc-n{font-size:10px;font-weight:600;letter-spacing:2px;color:#2c2a27;margin-bottom:18px;font-family:var(--mono)}
+    .pcard h3{font-size:15px;font-weight:700;color:#d8d4cd;letter-spacing:-.3px;margin-bottom:10px}
+    .pcard p{font-size:13px;line-height:1.72;color:#4a4844}
+    .pcard-spec{margin-top:20px;font-size:10px;font-family:var(--mono);color:#333;display:flex;flex-direction:column;gap:4px}
+
+    /* ââ CODE SECTION ââ */
+    .code-sec{padding:96px 56px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .code-lay{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:start;margin-top:64px}
+    .cw{background:#0d0b09;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.14)}
+    .cb{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:#141210;border-bottom:1px solid rgba(255,255,255,.05)}
+    .cb-l{display:flex;align-items:center;gap:6px}
+    .dot{width:9px;height:9px;border-radius:50%}.dr{background:#ff5f56}.dy{background:#ffbd2e}.dg{background:#27c93f}
+    .cf{font-family:var(--mono);font-size:11px;color:#3a3834;margin-left:12px}
+    .cb-tag{font-family:var(--mono);font-size:10px;color:#2a2825;border:1px solid rgba(255,255,255,.06);padding:2px 8px;border-radius:3px}
+    .cbody{padding:26px 28px;font-family:var(--mono);font-size:12px;line-height:2.05}
+    .cl{display:block}
+    .kw{color:#c792ea}.fc{color:#82aaff}.st{color:#c3e88d}.vr{color:#eeffff}.nm{color:#f78c6c}.cm{color:#3d5260;font-style:italic}.ky{color:#89ddff}
+    .ln{color:#272522;user-select:none;margin-right:18px;display:inline-block;width:16px;text-align:right}
+    .cres{padding:14px 28px;background:rgba(34,197,94,.05);border-top:1px solid rgba(34,197,94,.08);font-family:var(--mono);font-size:12px;color:#22c55e}
+
+    .cpts{display:flex;flex-direction:column;gap:32px}
+    .cp{border-left:2px solid var(--line);padding-left:20px}
+    .cp-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;font-family:var(--mono)}
+    .cp h4{font-size:15px;font-weight:800;letter-spacing:-.4px;color:var(--ink);margin-bottom:6px}
+    .cp p{font-size:13px;line-height:1.72;color:var(--muted)}
+
+    /* ââ CTA ââ */
+    .cta{padding:128px 56px;text-align:center}
+    .cta h2{font-size:clamp(40px,6.5vw,88px);font-weight:900;letter-spacing:-5px;color:var(--ink);margin-bottom:14px;line-height:.93}
+    .cta h2 em{font-style:italic;font-weight:300;color:var(--muted)}
+    .cta-sub{font-size:15px;color:var(--muted);margin-bottom:40px}
+    .cta-note{margin-top:32px;font-family:var(--mono);font-size:11px;color:var(--dim);display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+    .cta-note span{display:flex;align-items:center;gap:5px}
+    .cta-note .dot-g{width:5px;height:5px;border-radius:50%;background:#22c55e}
+
+    footer{padding:28px 56px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+    .f-logo{font-size:14px;font-weight:800;letter-spacing:-.4px;color:var(--ink)}
+    .f-copy{font-size:11px;color:var(--dim);font-family:var(--mono)}
+    .f-links{display:flex;gap:20px}
+    .f-links a{font-size:11px;color:var(--dim);text-decoration:none;font-family:var(--mono);transition:color .15s}
+    .f-links a:hover{color:var(--ink)}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <span class="logo-mark"><svg viewBox="0 0 12 12"><path d="M6 1L11 4V8L6 11L1 8V4L6 1Z"/></svg></span>
+    Proco
+  </a>
+  <div class="nav-links">
+    <a href="#">Protocol</a>
+    <a href="#">API</a>
+    <a href="#">Docs</a>
+    <a href="#">Use Cases</a>
+    <a href="#">Pricing</a>
+  </div>
+  <div class="nav-r">
+    <a href="#" class="ncta-ghost">Sign in</a>
+    <a href="#" class="ncta">Book a demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas id="cvs-i"></canvas>
+  <div class="hero-mask-l"></div>
+  <div class="hero-mask-tb"></div>
+  <div class="hero-txt">
+    <div class="eyebrow">
+      <span class="ey-pulse"></span>
+      <span class="ey-tag">Settlement infrastructure Â· live</span>
+    </div>
+    <h1 class="hero-h">Stablecoin<br/>rails built<br/>to <em>last.</em></h1>
+    <p class="hero-sub">Non-custodial payment infrastructure for fintechs, payroll platforms, and protocol teams. USDC across Base, Solana, and Ethereum.</p>
+    <div class="hero-spec">
+      <span class="spec-item">p99 <span class="spec-val">28s</span></span>
+      <span class="spec-sep">Â·</span>
+      <span class="spec-item">uptime <span class="spec-val">99.97%</span></span>
+      <span class="spec-sep">Â·</span>
+      <span class="spec-item">fee <span class="spec-val">0bp FX</span></span>
+    </div>
+    <div class="btns">
+      <a href="#" class="btn-dark">Book a demo â</a>
+      <a href="#" class="btn-ghost">Read the docs</a>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST STRIP (dark bar) -->
+<div class="trust-strip">
+  <div class="ts-item"><span class="ts-dot"></span>SOC 2 Type II</div>
+  <div class="ts-item"><span class="ts-dot"></span>Audited non-custodial architecture</div>
+  <div class="ts-item"><span class="ts-dot"></span>OFAC + UN + EU sanctions screening</div>
+  <div class="ts-item"><span class="ts-dot"></span>FATF Travel Rule compliant</div>
+  <div class="ts-item"><span class="ts-dot"></span>On-chain audit trail Â· every tx</div>
+  <div class="ts-item"><span class="ts-dot grey"></span>ISO 27001 in progress</div>
+</div>
+
+<!-- STAT ROW -->
+<div class="stats">
+  <div class="stat"><div class="sv">28<sup>s</sup></div><div class="sl">p99 settlement</div><div class="sd">24/7/365</div></div>
+  <div class="stat"><div class="sv">170<sup>+</sup></div><div class="sl">countries</div><div class="sd">live today</div></div>
+  <div class="stat"><div class="sv">0<sup>bp</sup></div><div class="sl">FX markup</div><div class="sd">flat fee per tx</div></div>
+  <div class="stat"><div class="sv">99.97<sup>%</sup></div><div class="sl">uptime Â· 90d</div><div class="sd">status.procohq.com</div></div>
+  <div class="stat"><div class="sv">3</div><div class="sl">lines to integrate</div><div class="sd">TypeScript SDK</div></div>
+</div>
+
+<!-- LIVE SETTLEMENT FEED -->
+<div class="sec">
+  <div class="con">
+    <div class="sec-comment">// live_settlement_feed Â· updating every 4s</div>
+    <h2 class="sh">Every payment.<br/>On-chain. Always.</h2>
+    <p class="sl-p">Every Proco settlement produces an immutable on-chain receipt. No black box. No trust-me-bro custody. Verifiable by anyone, forever.</p>
+
+    <div class="feed-wrap">
+      <div class="feed-terminal">
+        <div class="feed-bar">
+          <div class="feed-bar-dot fb-r"></div>
+          <div class="feed-bar-dot fb-y"></div>
+          <div class="feed-bar-dot fb-g"></div>
+          <span class="feed-label">settlement_monitor.ts</span>
+          <div class="feed-live"><span class="feed-pulse"></span>live</div>
+        </div>
+        <div class="feed-rows" id="feedRows"></div>
+      </div>
+
+      <div class="feed-points">
+        <div class="fp">
+          <div class="fp-top"><span class="fp-val" id="counterMs">18.4</span><span class="fp-unit">s avg</span></div>
+          <div class="fp-lbl">Average settlement time</div>
+          <div class="fp-sub">p99 â 28.1s</div>
+        </div>
+        <div class="fp">
+          <div class="fp-top"><span class="fp-val">0</span><span class="fp-unit">bp</span></div>
+          <div class="fp-lbl">FX markup on every payment</div>
+          <div class="fp-sub">vs 200â400bp on SWIFT</div>
+        </div>
+        <div class="fp">
+          <div class="fp-top"><span class="fp-val">3</span><span class="fp-unit">chains</span></div>
+          <div class="fp-lbl">Auto-routed for lowest latency</div>
+          <div class="fp-sub">Base Â· Solana Â· Ethereum</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROTOCOL ARCHITECTURE -->
+<div class="sec" style="background:var(--bg3)">
+  <div class="con">
+    <div class="sec-comment">// protocol_architecture Â· v2.1.0</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start">
+      <div>
+        <h2 class="sh">Designed from<br/>the ground up.</h2>
+        <p class="sl-p" style="margin-bottom:40px">Proco is not a wrapper around an existing rails product. It's a native stablecoin settlement protocol built non-custodial from day one.</p>
+        <div class="stack-points">
+          <div class="spt">
+            <div class="spt-tag">Layer 4 â Your product</div>
+            <h3>You own the UX</h3>
+            <p>Your brand. Your flow. Proco is invisible to your end user.</p>
+          </div>
+          <div class="spt">
+            <div class="spt-tag">Layer 3 â Chain router</div>
+            <h3>Automatic chain selection</h3>
+            <p>Picks Base, Solana, or Ethereum based on destination, fee, and current block latency. Not a config you have to maintain.</p>
+          </div>
+          <div class="spt">
+            <div class="spt-tag">Layer 1 â Settlement</div>
+            <h3>On-chain, non-custodial</h3>
+            <p>USDC moves directly. Proco never holds funds. Verifiable on-chain receipt for every transaction.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="stack">
+          <div class="stack-layer">
+            <span class="sl-num">04</span>
+            <span class="sl-bar yours"></span>
+            <div class="sl-txt"><h4>Your application</h4><p>Your SDK call, your webhook handler</p></div>
+            <span class="sl-badge">your code</span>
+          </div>
+          <div class="stack-connector"><div class="sc-line"></div></div>
+          <div class="stack-layer" style="background:var(--bg);border-color:rgba(0,0,0,.12)">
+            <span class="sl-num">03</span>
+            <span class="sl-bar proco"></span>
+            <div class="sl-txt"><h4>proco.payments.create()</h4><p>Compliance + chain routing + gas abstraction</p></div>
+            <span class="sl-badge">proco api</span>
+          </div>
+          <div class="stack-connector"><div class="sc-line"></div></div>
+          <div class="stack-layer">
+            <span class="sl-num">02</span>
+            <span class="sl-bar chain"></span>
+            <div class="sl-txt"><h4>Chain router</h4><p>Base / Solana / Ethereum Â· auto-selected</p></div>
+            <span class="sl-badge">routing layer</span>
+          </div>
+          <div class="stack-connector"><div class="sc-line"></div></div>
+          <div class="stack-layer">
+            <span class="sl-num">01</span>
+            <span class="sl-bar settle"></span>
+            <div class="sl-txt"><h4>On-chain settlement</h4><p>USDC transfer Â· immutable receipt Â· &lt;30s</p></div>
+            <span class="sl-badge">settlement</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USE CASES -->
+<div class="uc-sec">
+  <div class="uc-list">
+
+    <div class="uc">
+      <div class="uc-txt">
+        <div class="uc-n">Payroll</div>
+        <h3>Run global payroll. One API call. Under 30 seconds.</h3>
+        <p>HR platforms and fintechs use Proco to pay teams in 40+ countries in USDC, settling to local bank accounts without a correspondent bank in sight.</p>
+        <div class="uc-spec">
+          <span class="uc-chip">170+ countries</span>
+          <span class="uc-chip">p99 &lt; 30s</span>
+          <span class="uc-chip">0bp FX</span>
+          <span class="uc-chip">batch payments</span>
+        </div>
+      </div>
+      <div class="uc-vis">
+        <div class="payroll-table">
+          <div class="pt-head"><span>Recipient</span><span>Amount</span><span>Status</span></div>
+          <div class="pt-row">
+            <div><div class="pt-name">A. Kone</div><div class="pt-loc">NG Â· bank_transfer</div></div>
+            <div class="pt-amt">$3,200</div>
+            <div class="pt-status">settled</div>
+          </div>
+          <div class="pt-row">
+            <div><div class="pt-name">S. Reyes</div><div class="pt-loc">MX Â· bank_transfer</div></div>
+            <div class="pt-amt">$4,750</div>
+            <div class="pt-status">settled</div>
+          </div>
+          <div class="pt-row">
+            <div><div class="pt-name">M. Patel</div><div class="pt-loc">IN Â· upi</div></div>
+            <div class="pt-amt">$5,100</div>
+            <div class="pt-status">settled</div>
+          </div>
+          <div class="pt-row">
+            <div><div class="pt-name">J. Laurent</div><div class="pt-loc">FR Â· sepa</div></div>
+            <div class="pt-amt">$6,800</div>
+            <div class="pt-status pending">routing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-txt">
+        <div class="uc-n">Compliance</div>
+        <h3>The full compliance stack. In a single API call.</h3>
+        <p>KYC, KYB, KYT, AML, travel rule, OFAC, UN, EU sanctions screening â all bundled into the payment request. Your engineers build features, not regulatory infrastructure.</p>
+        <div class="uc-spec">
+          <span class="uc-chip">FATF Travel Rule</span>
+          <span class="uc-chip">OFAC screened</span>
+          <span class="uc-chip">KYC + KYB</span>
+          <span class="uc-chip">auto</span>
+        </div>
+      </div>
+      <div class="uc-vis">
+        <div class="compliance-stack">
+          <div class="cs-item"><div class="cs-check"><svg viewBox="0 0 9 9"><polyline points="1.5,4.5 3.5,6.5 7.5,2.5"/></svg></div><div class="cs-lbl">KYC â Identity verified</div><div class="cs-tag">auto</div></div>
+          <div class="cs-item"><div class="cs-check"><svg viewBox="0 0 9 9"><polyline points="1.5,4.5 3.5,6.5 7.5,2.5"/></svg></div><div class="cs-lbl">KYB â Entity cleared</div><div class="cs-tag">auto</div></div>
+          <div class="cs-item"><div class="cs-check"><svg viewBox="0 0 9 9"><polyline points="1.5,4.5 3.5,6.5 7.5,2.5"/></svg></div><div class="cs-lbl">AML â Transaction monitored</div><div class="cs-tag">auto</div></div>
+          <div class="cs-item"><div class="cs-check"><svg viewBox="0 0 9 9"><polyline points="1.5,4.5 3.5,6.5 7.5,2.5"/></svg></div><div class="cs-lbl">OFAC / UN / EU sanctions</div><div class="cs-tag">auto</div></div>
+          <div class="cs-item"><div class="cs-check"><svg viewBox="0 0 9 9"><polyline points="1.5,4.5 3.5,6.5 7.5,2.5"/></svg></div><div class="cs-lbl">FATF Travel Rule filed</div><div class="cs-tag">auto</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uc">
+      <div class="uc-txt">
+        <div class="uc-n">Architecture</div>
+        <h3>Non-custodial. Not a design choice â a protocol guarantee.</h3>
+        <p>Proco never holds your customers' funds. Non-custodial at the protocol level. No money transmission licence overhead. No custody risk passed to your legal team.</p>
+        <div class="uc-spec">
+          <span class="uc-chip">non-custodial</span>
+          <span class="uc-chip">no MTL required</span>
+          <span class="uc-chip">on-chain receipts</span>
+        </div>
+      </div>
+      <div class="uc-vis">
+        <div class="arch-diagram">
+          <div class="ad-row">
+            <div class="ad-icon light"><svg viewBox="0 0 12 12"><rect x="1" y="2" width="10" height="8" rx="1.5"/><path d="M4 5h4M4 7h2"/></svg></div>
+            <div><div class="ad-txt">Your application</div><div class="ad-sub">your funds, always</div></div>
+          </div>
+          <div class="ad-conn"><div class="ad-line"></div></div>
+          <div class="ad-row highlight">
+            <div class="ad-icon dark"><svg viewBox="0 0 12 12"><path d="M6 1L11 3.5V6c0 2.8-2.1 4.6-5 5C3.1 10.6 1 8.8 1 6V3.5L6 1z"/></svg></div>
+            <div><div class="ad-txt">Proco Protocol</div><div class="ad-sub">routes Â· never holds</div></div>
+          </div>
+          <div class="ad-conn"><div class="ad-line"></div></div>
+          <div class="ad-row">
+            <div class="ad-icon light"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.5"/><path d="M6 3.5V6l2 1.5"/></svg></div>
+            <div><div class="ad-txt">On-chain settlement</div><div class="ad-sub">USDC Â· Base Â· Solana Â· ETH</div></div>
+          </div>
+          <div class="ad-conn"><div class="ad-line"></div></div>
+          <div class="ad-row">
+            <div class="ad-icon light"><svg viewBox="0 0 12 12"><path d="M2 9l8-6M10 9l-8-6"/></svg></div>
+            <div><div class="ad-txt">Recipient bank account</div><div class="ad-sub">local currency Â· direct</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DARK PLATFORM -->
+<div class="platform">
+  <div class="con">
+    <div class="sec-tag">Protocol modules</div>
+    <h2 class="sh">Four modules.<br/>One API surface.</h2>
+    <p class="sl-p">Proco ships four production-grade modules. Use all of them, or just the ones you need.</p>
+    <div class="pgrid">
+      <div class="pcard">
+        <div class="pc-n">module_01</div>
+        <h3>Payment Orchestration</h3>
+        <p>USDC across Base, Solana, Ethereum. Automatic chain selection by latency and fee. Gas abstracted. p99 &lt; 30s.</p>
+        <div class="pcard-spec">
+          <span>chains: base, solana, eth</span>
+          <span>p99_latency: 28.1s</span>
+          <span>countries: 170+</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-n">module_02</div>
+        <h3>Compliance Suite</h3>
+        <p>KYC, KYB, KYT, AML. Travel rule. OFAC, EU, UN sanctions. One call per payment. No compliance infrastructure to build.</p>
+        <div class="pcard-spec">
+          <span>compliance: 'auto' | manual</span>
+          <span>travel_rule: FATF</span>
+          <span>sanctions: OFAC + EU + UN</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-n">module_03</div>
+        <h3>Treasury & Yield</h3>
+        <p>~3.5% APY on idle USDC. Automated sweeps. Real-time P&L. Full on-chain reporting. No fund lockup.</p>
+        <div class="pcard-spec">
+          <span>apy: ~3.5%</span>
+          <span>lockup: none</span>
+          <span>reporting: real-time</span>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-n">module_04</div>
+        <h3>Embedded Wallets</h3>
+        <p>White-label non-custodial wallets. Programmable spend controls, hosted payment links, zero crypto UX burden.</p>
+        <div class="pcard-spec">
+          <span>custody: non-custodial</span>
+          <span>brand: white-label</span>
+          <span>controls: programmable</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CODE SECTION -->
+<div class="code-sec">
+  <div class="con">
+    <div class="sec-comment">// integrate in &lt;48h Â· rest_api + typescript_sdk</div>
+    <h2 class="sh">Built for<br/>engineers.</h2>
+    <p class="sl-p">TypeScript SDK, REST API, signed webhooks, full sandbox. No blockchain knowledge required.</p>
+    <div class="code-lay">
+      <div class="cw">
+        <div class="cb">
+          <div class="cb-l"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div><span class="cf">payment.ts</span></div>
+          <div class="cb-tag">@proco/sdk v2.1.0</div>
+        </div>
+        <div class="cbody">
+<span class="cl"><span class="ln">1</span><span class="kw">import</span> <span class="vr">Proco</span> <span class="kw">from</span> <span class="st">'@proco/sdk'</span>;</span>
+<span class="cl"><span class="ln">2</span>&nbsp;</span>
+<span class="cl"><span class="ln">3</span><span class="kw">const</span> <span class="vr">proco</span> = <span class="kw">new</span> <span class="fc">Proco</span>({ <span class="ky">apiKey</span>: <span class="vr">process</span>.<span class="ky">env</span>.<span class="vr">PROCO_KEY</span> });</span>
+<span class="cl"><span class="ln">4</span>&nbsp;</span>
+<span class="cl"><span class="ln">5</span><span class="cm">// Full compliance + settlement in one call</span></span>
+<span class="cl"><span class="ln">6</span><span class="kw">const</span> <span class="vr">tx</span> = <span class="kw">await</span> proco.payments.<span class="fc">create</span>({</span>
+<span class="cl"><span class="ln">7</span>  <span class="ky">amount</span>: <span class="nm">500_000</span>, <span class="cm">// USD cents</span></span>
+<span class="cl"><span class="ln">8</span>  <span class="ky">currency</span>: <span class="st">'USDC'</span>,</span>
+<span class="cl"><span class="ln">9</span>  <span class="ky">destination</span>: { <span class="ky">country</span>: <span class="st">'NG'</span>, <span class="ky">method</span>: <span class="st">'bank_transfer'</span> },</span>
+<span class="cl"><span class="ln">10</span>  <span class="ky">compliance</span>: <span class="st">'auto'</span>, <span class="cm">// KYC+KYB+AML+sanctions</span></span>
+<span class="cl"><span class="ln">11</span>});</span>
+<span class="cl"><span class="ln">12</span>&nbsp;</span>
+<span class="cl"><span class="ln">13</span><span class="vr">console</span>.<span class="fc">log</span>(<span class="vr">tx</span>);</span>
+        </div>
+        <div class="cres">// { status:'settled', chain:'base', settlementMs:18430,<br/>//   txHash:'0xf3a8c...', complianceRef:'CPL_7f2b...' }</div>
+      </div>
+      <div class="cpts">
+        <div class="cp">
+          <div class="cp-tag">SDK</div>
+          <h4>TypeScript SDK + REST API</h4>
+          <p>Full types and auto-complete. OpenAPI 3.1 spec. Works with any language â Python, Go, Ruby clients available.</p>
+        </div>
+        <div class="cp">
+          <div class="cp-tag">Webhooks</div>
+          <h4>HMAC-signed webhooks</h4>
+          <p>Real-time, HMAC-SHA256 signed delivery with retries. Every settlement status, compliance event, and failure â streamed instantly.</p>
+        </div>
+        <div class="cp">
+          <div class="cp-tag">Testing</div>
+          <h4>Full sandbox environment</h4>
+          <p>Mirror production exactly. Simulate settlements, failures, and compliance outcomes without touching real funds or chains.</p>
+        </div>
+        <div class="cp">
+          <div class="cp-tag">Architecture</div>
+          <h4>Non-custodial by design</h4>
+          <p>Proco never holds funds. No MTL licensing overhead, no custody risk passed to your legal or compliance team.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>Built to move<br/><em>real money.</em></h2>
+  <p class="cta-sub">Most teams are in production within 48 hours.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="#" class="btn-dark">Book a demo â</a>
+    <a href="#" class="btn-ghost">View the docs</a>
+  </div>
+  <div class="cta-note">
+    <span><span class="dot-g"></span>SOC 2 Type II</span>
+    <span><span class="dot-g"></span>Non-custodial</span>
+    <span><span class="dot-g"></span>Sandbox on signup</span>
+    <span><span class="dot-g"></span>No commitment</span>
+  </div>
+</div>
+
+<footer>
+  <div class="f-logo">Proco</div>
+  <div class="f-copy">Non-custodial stablecoin settlement infrastructure</div>
+  <div class="f-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Docs</a>
+    <a href="#">Status</a>
+    <a href="#">Security</a>
+  </div>
+</footer>
+
+<script>
+/* ââââââââââââ THREE.JS RIPPLING MESH ââââââââââââ */
+(function(){
+  const canvas = document.getElementById('cvs-i');
+  const wrap = canvas.parentElement;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+  camera.position.set(0, 0, 7.5);
+
+  scene.add(new THREE.AmbientLight(0xfff8f0, 0.5));
+  const d1 = new THREE.DirectionalLight(0xfff0d5, 2.2);
+  d1.position.set(4, 8, 6); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0xd5e4ff, 1.1);
+  d2.position.set(-6, -2, 4); scene.add(d2);
+  const d3 = new THREE.DirectionalLight(0xffe0b0, 0.5);
+  d3.position.set(0, -6, -3); scene.add(d3);
+  const pt = new THREE.PointLight(0xffb860, 0.9, 14);
+  pt.position.set(2, 3, 4); scene.add(pt);
+
+  const SEGS = 72;
+  const planeGeo = new THREE.PlaneGeometry(10, 10, SEGS, SEGS);
+  const planeMat = new THREE.MeshPhysicalMaterial({
+    color: 0xc2bdb0,
+    metalness: 0.04,
+    roughness: 0.04,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.02,
+    reflectivity: 1.0,
+    side: THREE.DoubleSide,
+  });
+  const plane = new THREE.Mesh(planeGeo, planeMat);
+  plane.rotation.x = -Math.PI / 2.4;
+  plane.position.set(4.0, -0.2, -1.2);
+
+  const group = new THREE.Group();
+  group.add(plane);
+  scene.add(group);
+
+  const wfGeo = new THREE.PlaneGeometry(10, 10, SEGS, SEGS);
+  const wf = new THREE.Mesh(wfGeo, new THREE.MeshBasicMaterial({
+    color: 0x9e9890, wireframe: true, transparent: true, opacity: 0.09, side: THREE.DoubleSide,
+  }));
+  wf.rotation.copy(plane.rotation);
+  wf.position.copy(plane.position);
+  group.add(wf);
+
+  const posAttr = planeGeo.attributes.position;
+  const wfPosAttr = wfGeo.attributes.position;
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', (e) => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  function resize() {
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(wrap);
+  resize();
+
+  let t = 0;
+  function frame() {
+    requestAnimationFrame(frame);
+    t += 0.011;
+    const pos = posAttr.array;
+    for (let i = 0; i < posAttr.count; i++) {
+      const x = posAttr.getX(i), y = posAttr.getY(i);
+      const z = Math.sin(x * 0.65 + t * 0.85) * 0.32
+              + Math.sin(y * 0.75 + t * 0.65) * 0.26
+              + Math.sin((x + y) * 0.45 + t * 1.05) * 0.18
+              + Math.sin(x * 1.4  - t * 0.55) * 0.10
+              + Math.sin((x - y) * 0.9 + t * 1.35) * 0.07;
+      pos[i * 3 + 2] = z;
+    }
+    posAttr.needsUpdate = true;
+    planeGeo.computeVertexNormals();
+    const wfp = wfPosAttr.array;
+    for (let i = 0; i < posAttr.count; i++) wfp[i * 3 + 2] = pos[i * 3 + 2];
+    wfPosAttr.needsUpdate = true;
+    group.rotation.y += (mx * 0.07 - group.rotation.y) * 0.035;
+    group.rotation.x += (my * 0.04 - group.rotation.x) * 0.035;
+    pt.position.x = 2 + Math.sin(t * 0.4) * 1.5;
+    pt.position.y = 3 + Math.cos(t * 0.3) * 1.0;
+    renderer.render(scene, camera);
+  }
+  frame();
+})();
+
+/* ââââââââââââ LIVE SETTLEMENT FEED ââââââââââââ */
+(function(){
+  const chains = ['base','solana','eth'];
+  const countries = ['NG','KE','GH','IN','MX','PH','CO','ZA','BR','EG','PK','BD'];
+  const feedEl = document.getElementById('feedRows');
+  const rows = [];
+  const MAX = 8;
+
+  function hex(n){ return Math.floor(Math.random()*Math.pow(16,n)).toString(16).padStart(n,'0'); }
+  function randMs(){ return (Math.random()*18+8).toFixed(1); }
+  function randAmt(){ const v=Math.floor(Math.random()*48000+500); return '$'+v.toLocaleString(); }
+  function randChain(){ return chains[Math.floor(Math.random()*chains.length)]; }
+  function randCountry(){ return countries[Math.floor(Math.random()*countries.length)]; }
+
+  function addRow(){
+    const row = document.createElement('div');
+    row.className = 'feed-row';
+    const chain = randChain();
+    const hash = '0x'+hex(4)+'...'+hex(4);
+    const ms = randMs();
+    const amt = randAmt();
+    const country = randCountry();
+    row.innerHTML = `<span class="fr-chain">${chain}</span><span class="fr-hash">${hash}</span><span class="fr-country">${country}</span><span class="fr-amt">${amt}</span><span class="fr-ms">${ms}s</span><span class="fr-dot"></span>`;
+
+    if(feedEl.firstChild) feedEl.insertBefore(row, feedEl.firstChild);
+    else feedEl.appendChild(row);
+    rows.unshift(row);
+    if(rows.length > MAX){
+      const old = rows.pop();
+      old.style.opacity = '0';
+      old.style.transition = 'opacity .3s';
+      setTimeout(()=>{ if(old.parentNode) old.parentNode.removeChild(old); }, 300);
+    }
+  }
+
+  // Seed initial rows
+  for(let i=0;i<MAX;i++) addRow();
+  setInterval(addRow, 4000);
+})();
+</script>
+</body>
+</html>
