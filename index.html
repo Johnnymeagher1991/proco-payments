@@ -3,205 +3,210 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Proco — Health &amp; Longevity</title>
-  <meta name="description" content="Evidence-based health and longevity guidance. AI-powered tools to help you live longer and perform better. Built in Dublin." />
+  <title>Proco — The intersection of health & technology</title>
+  <meta name="description" content="Evidence-based content on longevity, performance, sleep, and nutrition. AI-powered tools to help you live longer and perform better." />
+  <meta property="og:title" content="Proco — Live longer. Perform better." />
+  <meta property="og:description" content="Evidence-based health and longevity content. The intersection of health and technology." />
+  <meta property="og:type" content="website" />
+
+  <!-- HubSpot Tracking -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/6067029.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg: #0a0a0a;
-      --surface: #111111;
-      --border: #1e1e1e;
-      --accent: #e8f5e9;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #222222;
+      --text: #e8e8e8;
+      --text-muted: #888888;
+      --text-dim: #555555;
       --green: #4caf50;
       --green-dim: #2e7d32;
-      --text: #e8e8e8;
-      --text-muted: #888;
-      --text-dim: #555;
-      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --green-pale: rgba(76,175,80,0.08);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
-    a:hover { color: var(--green); }
-
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 40px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,10,0.92);
-      backdrop-filter: blur(12px);
-    }
-    .nav-logo { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-    .nav-right { display: flex; gap: 28px; align-items: center; }
-    .nav-link { font-size: 13px; color: var(--text-muted); transition: color 0.2s; }
-    .nav-cta {
-      font-size: 13px; padding: 8px 16px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface);
-    }
-    section { padding: 100px 40px; max-width: 1000px; margin: 0 auto; }
-    .hero { padding-top: 180px; padding-bottom: 120px; border-bottom: 1px solid var(--border); }
-    .hero-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--green); text-transform: uppercase; margin-bottom: 28px; }
-    .hero h1 { font-size: clamp(38px, 5vw, 64px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 24px; color: #f0f0f0; }
-    .hero h1 em { font-style: normal; color: var(--green); }
-    .hero-sub { font-size: 18px; color: var(--text-muted); max-width: 560px; line-height: 1.6; margin-bottom: 40px; }
-    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-    .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--green-dim); color: #fff; border-radius: 6px; font-size: 14px; font-weight: 500; border: 1px solid var(--green-dim); }
-    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: transparent; color: var(--text-muted); border-radius: 6px; font-size: 14px; border: 1px solid var(--border); }
-    .ticker { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border); }
-    .ticker-item { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
-    .ticker-item span { color: var(--green); margin-right: 6px; }
-    .section-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 16px; }
-    .section-title { font-size: clamp(24px, 3vw, 38px); font-weight: 700; letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 20px; color: #ebebeb; }
-    .section-body { font-size: 16px; color: var(--text-muted); max-width: 620px; line-height: 1.7; }
-    .why { border-bottom: 1px solid var(--border); }
-    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 52px; }
-    .why-card { background: var(--surface); padding: 32px; }
-    .why-num { font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 1px; margin-bottom: 14px; }
-    .why-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #ddd; }
-    .why-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-    .pillars { border-bottom: 1px solid var(--border); }
-    .pillars-intro { margin-bottom: 52px; }
-    .pillars-list { display: flex; flex-direction: column; gap: 1px; }
-    .pillar { display: flex; align-items: flex-start; gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--border); }
-    .pillar:last-child { border-bottom: none; }
-    .pillar-icon { font-size: 22px; flex-shrink: 0; width: 36px; }
-    .pillar-content h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #ddd; }
-    .pillar-content p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-    .approach { border-bottom: 1px solid var(--border); }
-    .approach-phases { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 52px; }
-    .phase { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; }
-    .phase.active { border-color: var(--green-dim); background: #0d1f0e; }
-    .phase-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
-    .phase.active .phase-label { color: var(--green); }
-    .phase h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #ddd; }
-    .phase p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-    .phase-badge { display: inline-block; margin-top: 16px; font-size: 11px; font-family: var(--mono); padding: 4px 10px; border-radius: 4px; background: rgba(76,175,80,0.12); color: var(--green); letter-spacing: 0.5px; }
-    .where { border-bottom: 1px solid var(--border); }
-    .where-body { max-width: 640px; }
-    .where-body p { font-size: 16px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
-    .contact { border-bottom: 1px solid var(--border); }
-    .contact-box { margin-top: 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 48px; display: flex; align-items: flex-start; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
-    .contact-box h3 { font-size: 20px; font-weight: 600; margin-bottom: 10px; color: #eee; }
-    .contact-box p { font-size: 14px; color: var(--text-muted); max-width: 380px; line-height: 1.7; }
-    .contact-actions { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
-    .contact-link { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); padding: 10px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
-    .contact-link:last-child { border-bottom: none; }
-    footer { border-top: 1px solid var(--border); padding: 40px; max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .footer-left { font-size: 13px; color: var(--text-dim); }
-    .footer-left strong { color: var(--text-muted); font-weight: 500; }
-    .footer-right { display: flex; gap: 20px; align-items: center; }
-    .footer-link { font-size: 12px; color: var(--text-dim); transition: color 0.2s; }
-    @media (max-width: 640px) { nav { padding: 16px 20px; } .nav-right .nav-link { display: none; } section { padding: 80px 20px; } .hero { padding-top: 140px; padding-bottom: 80px; } footer { flex-direction: column; padding: 30px 20px; } }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.04em; }
+    .nav-logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.9rem; color: var(--text-muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--green); color: #000 !important; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; transition: opacity 0.2s !important; }
+    .nav-cta:hover { opacity: 0.85; }
+    section { padding: 100px 5%; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .container-sm { max-width: 680px; margin: 0 auto; }
+    .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; line-height: 1.2; }
+    .section-sub { color: var(--text-muted); font-size: 1.05rem; max-width: 520px; margin-bottom: 3.5rem; line-height: 1.7; }
+    #hero { padding-top: 160px; padding-bottom: 120px; text-align: center; }
+    .hero-tag { display: inline-block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); border: 1px solid var(--green-dim); border-radius: 20px; padding: 0.3rem 0.9rem; margin-bottom: 2rem; }
+    h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+    h1 em { font-style: normal; color: var(--green); }
+    .hero-sub { font-size: clamp(1rem, 2vw, 1.2rem); color: var(--text-muted); max-width: 540px; margin: 0 auto 3rem; line-height: 1.7; }
+    .capture-wrap { max-width: 480px; margin: 0 auto; }
+    .capture-form { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+    .capture-form input[type="email"] { flex: 1; min-width: 240px; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-size: 0.95rem; padding: 0.85rem 1.2rem; border-radius: 8px; outline: none; transition: border-color 0.2s; font-family: var(--font); }
+    .capture-form input[type="email"]:focus { border-color: var(--green); }
+    .capture-form input[type="email"]::placeholder { color: var(--text-dim); }
+    .btn-primary { background: var(--green); color: #000; font-weight: 700; font-size: 0.9rem; padding: 0.85rem 1.6rem; border-radius: 8px; border: none; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; font-family: var(--font); }
+    .btn-primary:hover { opacity: 0.85; }
+    .capture-note { font-size: 0.78rem; color: var(--text-dim); margin-top: 0.75rem; text-align: center; }
+    .capture-success { display: none; text-align: center; color: var(--green); font-weight: 600; padding: 1rem; font-size: 1rem; }
+    #pillars { background: var(--bg2); }
+    .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.25rem; }
+    .pillar-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; transition: border-color 0.2s, transform 0.2s; }
+    .pillar-card:hover { border-color: var(--green-dim); transform: translateY(-2px); }
+    .pillar-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .pillar-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .pillar-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+    .articles-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
+    .articles-header a { font-size: 0.9rem; color: var(--green); font-weight: 600; }
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .article-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+    .article-card:hover { border-color: var(--green-dim); transform: translateY(-3px); }
+    .article-thumb { height: 160px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 2.8rem; border-bottom: 1px solid var(--border); }
+    .article-body { padding: 1.5rem; }
+    .article-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-bottom: 0.6rem; }
+    .article-card h3 { font-size: 1.05rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.6rem; }
+    .article-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+    .coming-soon-card { opacity: 0.45; pointer-events: none; }
+    .coming-soon-badge { display: inline-block; font-size: 0.7rem; background: var(--bg3); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 20px; color: var(--text-dim); }
+    #capture-mid { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 5%; text-align: center; }
+    #capture-mid h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    #capture-mid p { color: var(--text-muted); margin-bottom: 2rem; }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .about-text h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1.25rem; line-height: 1.2; }
+    .about-text p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--green); line-height: 1; margin-bottom: 0.4rem; }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+    #newsletter { background: var(--bg2); padding: 80px 5%; text-align: center; border-top: 1px solid var(--border); }
+    footer { border-top: 1px solid var(--border); padding: 3rem 5%; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-logo { font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; }
+    .footer-logo span { color: var(--green); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.85rem; color: var(--text-dim); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-muted); }
+    .footer-copy { font-size: 0.8rem; color: var(--text-dim); width: 100%; margin-top: 1rem; text-align: center; }
+    @media (max-width: 768px) { section { padding: 80px 6%; } .nav-links { display: none; } .about-grid { grid-template-columns: 1fr; gap: 3rem; } }
+    @media (max-width: 480px) { .pillars-grid { grid-template-columns: 1fr; } .capture-form { flex-direction: column; } .capture-form input[type="email"] { min-width: unset; } }
   </style>
 </head>
 <body>
 <nav>
-  <a href="/" class="nav-logo">Proco</a>
-  <div class="nav-right">
-    <a href="#why" class="nav-link">Why</a>
-    <a href="#pillars" class="nav-link">Topics</a>
-    <a href="#approach" class="nav-link">Approach</a>
-    <a href="#contact" class="nav-cta">Get in touch →</a>
+  <div class="nav-logo">Pro<span>co</span></div>
+  <div class="nav-links">
+    <a href="#pillars">Topics</a>
+    <a href="#articles">Articles</a>
+    <a href="#about">About</a>
+    <a href="#newsletter" class="nav-cta">Subscribe free</a>
   </div>
 </nav>
-<section class="hero">
-  <p class="hero-eyebrow">Health &middot; Longevity &middot; Performance</p>
-  <h1>Live <em>longer</em>.<br/>Perform better.</h1>
-  <p class="hero-sub">Evidence-based health and longevity guidance — translated from the research into things you can actually do. AI-powered tools coming soon. Built in Dublin.</p>
-  <div class="hero-actions">
-    <a href="mailto:hello@procohq.com" class="btn-primary">Join the waitlist →</a>
-    <a href="#why" class="btn-secondary">Learn more</a>
-  </div>
-  <div class="ticker">
-    <div class="ticker-item"><span>&#9679;</span> Evidence-based</div>
-    <div class="ticker-item"><span>&#9679;</span> Longevity science</div>
-    <div class="ticker-item"><span>&#9679;</span> AI-native</div>
-    <div class="ticker-item"><span>&#9679;</span> EU-first &middot; Privacy by default</div>
-    <div class="ticker-item"><span>&#9679;</span> Dublin, Ireland</div>
-  </div>
-</section>
-<section class="why" id="why">
-  <p class="section-label">The opportunity</p>
-  <h2 class="section-title">The gap is huge.<br/>And it is getting wider.</h2>
-  <p class="section-body">People want to live longer and perform better. The science exists. The wearables exist. The data exists. What is missing is a trusted, accessible brand that translates all of it into clear, actionable guidance — without the pseudoscience, without the personal cult, without the US-only access.</p>
-  <div class="why-grid">
-    <div class="why-card"><div class="why-num">01</div><h3>The research is moving fast</h3><p>Longevity science — senolytics, GLP-1s, NAD+, Zone 2, biological age testing — is crossing from academic journals into mainstream awareness. Most people have no idea what to do with it.</p></div>
-    <div class="why-card"><div class="why-num">02</div><h3>Wearables without guidance</h3><p>Millions of people are wearing Oura, Whoop, and CGMs. They have more health data than ever. Almost none of them know how to act on it.</p></div>
-    <div class="why-card"><div class="why-num">03</div><h3>EU is underserved</h3><p>The best consumer healthtech companies — Levels, Function Health, Superpower — are US-only. European consumers want privacy-first, GDPR-native health tools. Nobody is building them.</p></div>
-    <div class="why-card"><div class="why-num">04</div><h3>AI makes it possible</h3><p>Personalised health guidance previously cost €500/hour from a nutritionist or performance coach. AI makes it possible to deliver that quality of guidance at scale, to everyone.</p></div>
-  </div>
-</section>
-<section class="pillars" id="pillars">
-  <div class="pillars-intro">
-    <p class="section-label">What we cover</p>
-    <h2 class="section-title">Health is the whole picture.</h2>
-    <p class="section-body">We cover the full spectrum — from the science of longevity to the practicalities of performance. No single-modality obsession. Whatever the research says matters, we cover it.</p>
-  </div>
-  <div class="pillars-list">
-    <div class="pillar"><div class="pillar-icon">🔬</div><div class="pillar-content"><h3>Longevity science</h3><p>What the research actually says about living longer — senolytics, autophagy, biological age, NAD+, and what is genuinely evidence-based versus hype.</p></div></div>
-    <div class="pillar"><div class="pillar-icon">⚡</div><div class="pillar-content"><h3>Performance &amp; optimisation</h3><p>Sleep, energy, cognitive performance, and body composition — the levers that actually move, grounded in physiology and sports science.</p></div></div>
-    <div class="pillar"><div class="pillar-icon">🥗</div><div class="pillar-content"><h3>Nutrition &amp; metabolic health</h3><p>Evidence-based nutrition without fads or fear. Metabolic flexibility, glucose regulation, and the emerging research on what to actually eat.</p></div></div>
-    <div class="pillar"><div class="pillar-icon">🤖</div><div class="pillar-content"><h3>AI &amp; technology in health</h3><p>How wearables, diagnostics, and AI are changing what is possible in personal health — and how to get more out of the tools you already have.</p></div></div>
-    <div class="pillar"><div class="pillar-icon">📋</div><div class="pillar-content"><h3>Protocols &amp; frameworks</h3><p>Clear, actionable protocols distilled from the research. Not just information — things you can start doing this week.</p></div></div>
-  </div>
-</section>
-<section class="approach" id="approach">
-  <p class="section-label">How we're building</p>
-  <h2 class="section-title">Audience first.<br/>Product second.</h2>
-  <p class="section-body">The best consumer health companies — Zoe, Levels, Function Health — built their community before they built their product. We are doing the same. Phase 1 is content. Phase 2 is tools. In that order.</p>
-  <div class="approach-phases">
-    <div class="phase active"><div class="phase-label">Phase 1 &mdash; Now</div><h3>Content engine</h3><p>Build an audience around evidence-based health and longevity content. Publish consistently. Build the email list. Let the audience tell us what to build.</p><span class="phase-badge">&#9679; Active</span></div>
-    <div class="phase"><div class="phase-label">Phase 2 &mdash; Year 1</div><h3>First application</h3><p>Ship an AI-powered health tool built on the exact problems Phase 1 reveals. Launch to an existing, engaged audience. No guessing on demand.</p></div>
-    <div class="phase"><div class="phase-label">Phase 3 &mdash; Scale</div><h3>Platform</h3><p>Multiple AI health tools, B2B partnerships, and a privacy-first EU health platform — built on a foundation of community trust.</p></div>
-  </div>
-</section>
-<section class="where">
-  <p class="section-label">About</p>
-  <h2 class="section-title">Built in Dublin.</h2>
-  <div class="where-body">
-    <p>Proco Technologies Limited is an Irish healthtech company. We are building an evidence-based health and longevity brand for the European market — privacy-first, AI-native, grounded in science.</p>
-    <p>We believe the best consumer health companies of the next decade will be built on community trust, not clinical authority. Content first. Tools second. Audience always.</p>
-    <p style="color: var(--text-dim); font-size: 14px;">Proco Technologies Limited &middot; Company No. 670796 &middot; Dublin, Ireland</p>
-  </div>
-</section>
-<section class="contact" id="contact">
-  <p class="section-label">Get in touch</p>
-  <h2 class="section-title">We'd like to hear from you.</h2>
-  <div class="contact-box">
-    <div>
-      <h3>Early access &amp; partnerships</h3>
-      <p>If you want to be first to know when we launch, are interested in partnering, or simply want to follow along as we build — get in touch.</p>
+<section id="hero">
+  <div class="container">
+    <div class="hero-tag">Health × Technology</div>
+    <h1>Live longer.<br><em>Perform better.</em></h1>
+    <p class="hero-sub">Evidence-based content on longevity, performance, sleep, and nutrition — delivered to your inbox, free.</p>
+    <div class="capture-wrap">
+      <form class="capture-form" id="hero-form" onsubmit="handleSubmit(event,'hero')">
+        <input type="email" placeholder="Your email address" required autocomplete="email" />
+        <button type="submit" class="btn-primary">Get the newsletter →</button>
+      </form>
+      <div class="capture-success" id="hero-success">You're in. First issue on its way. ✓</div>
+      <p class="capture-note">No spam. Unsubscribe anytime.</p>
     </div>
-    <div class="contact-actions">
-      <a href="mailto:hello@procohq.com" class="contact-link"><span>✉</span> hello@procohq.com</a>
-      <a href="https://x.com/procohq" class="contact-link" target="_blank" rel="noopener"><span>𝕏</span> @procohq</a>
-      <a href="https://linkedin.com/company/procohq" class="contact-link" target="_blank" rel="noopener"><span>in</span> LinkedIn</a>
+  </div>
+</section>
+<section id="pillars">
+  <div class="container">
+    <p class="section-label">What we cover</p>
+    <h2 class="section-title">Five pillars. One goal.</h2>
+    <p class="section-sub">Every piece of content is grounded in research — not trends, not influencer protocols. Just the science of living well.</p>
+    <div class="pillars-grid">
+      <div class="pillar-card"><div class="pillar-icon">🧬</div><h3>Longevity Science</h3><p>Biological age, lifespan vs. healthspan, the latest longevity research and what it means in practice.</p></div>
+      <div class="pillar-card"><div class="pillar-icon">⚡</div><h3>Performance</h3><p>Cognitive and physical output, recovery, training science. How to do more with less wear on the body.</p></div>
+      <div class="pillar-card"><div class="pillar-icon">🌙</div><h3>Sleep</h3><p>Sleep architecture, circadian rhythm, optimisation. The most underrated performance lever there is.</p></div>
+      <div class="pillar-card"><div class="pillar-icon">🥗</div><h3>Nutrition</h3><p>Evidence-based nutrition, metabolic health, supplementation. No fads — just what the data says.</p></div>
+      <div class="pillar-card"><div class="pillar-icon">🤖</div><h3>AI in Health</h3><p>How AI is reshaping diagnostics, personalised medicine, and what it means for your health right now.</p></div>
+    </div>
+  </div>
+</section>
+<section id="articles">
+  <div class="container">
+    <div class="articles-header"><div><p class="section-label">Latest</p><h2 class="section-title">From the archive</h2></div><a href="#newsletter">See all →</a></div>
+    <div class="articles-grid">
+      <div class="article-card coming-soon-card"><div class="article-thumb">🌙</div><div class="article-body"><div class="article-tag">Sleep</div><h3>The 90-Minute Sleep Cycle: Why Your Alarm Is Sabotaging Your Recovery</h3><p>How sleep architecture actually works — and the simple timing shift that changes everything.</p><span class="coming-soon-badge">Coming soon</span></div></div>
+      <div class="article-card coming-soon-card"><div class="article-thumb">⚡</div><div class="article-body"><div class="article-tag">Performance</div><h3>Zone 2 Training: The Most Underrated Protocol in Exercise Science</h3><p>Why the world's top longevity doctors prescribe slow cardio — and how to do it right.</p><span class="coming-soon-badge">Coming soon</span></div></div>
+      <div class="article-card coming-soon-card"><div class="article-thumb">🤖</div><div class="article-body"><div class="article-tag">AI in Health</div><h3>How AI Is Already Outperforming Doctors at Early Cancer Detection</h3><p>The diagnostic tools that exist today — and what the peer-reviewed research actually shows.</p><span class="coming-soon-badge">Coming soon</span></div></div>
+    </div>
+  </div>
+</section>
+<section id="capture-mid">
+  <div class="container-sm">
+    <h2>The research, distilled.</h2>
+    <p>Join readers getting evidence-based health insights every week — no noise, no trends.</p>
+    <div class="capture-wrap" style="margin:0 auto">
+      <form class="capture-form" id="mid-form" onsubmit="handleSubmit(event,'mid')"><input type="email" placeholder="Your email address" required autocomplete="email" /><button type="submit" class="btn-primary">Subscribe free →</button></form>
+      <div class="capture-success" id="mid-success">You're subscribed. Talk soon. ✓</div>
+      <p class="capture-note">No spam. Unsubscribe anytime.</p>
+    </div>
+  </div>
+</section>
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text"><p class="section-label">About Proco</p><h2>Health meets technology.</h2><p>Proco exists at the intersection of health science and technology. We cut through the noise — synthesising research across five pillars into content that's actually useful.</p><p>We're building towards AI-powered tools that help people act on what the science says. But first: the content engine. The best products start by understanding what people actually need.</p></div>
+      <div class="about-stats">
+        <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Content pillars covering every dimension of health</div></div>
+        <div class="stat-card"><div class="stat-num">2×</div><div class="stat-label">Weekly — long-form articles and short insights</div></div>
+        <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Evidence-based — every claim backed by research</div></div>
+        <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Sponsored content or paid placements. Ever.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="newsletter">
+  <div class="container-sm">
+    <p class="section-label">Newsletter</p>
+    <h2 class="section-title">Start here.</h2>
+    <p style="color:var(--text-muted);margin-bottom:2rem;font-size:1.05rem;">Evidence-based health and longevity insights, twice a week. Free.</p>
+    <div class="capture-wrap" style="margin:0 auto">
+      <form class="capture-form" id="footer-form" onsubmit="handleSubmit(event,'footer')"><input type="email" placeholder="Your email address" required autocomplete="email" /><button type="submit" class="btn-primary">Subscribe →</button></form>
+      <div class="capture-success" id="footer-success">Welcome aboard. ✓</div>
+      <p class="capture-note">No spam. Unsubscribe anytime.</p>
     </div>
   </div>
 </section>
 <footer>
-  <div class="footer-left"><strong>Proco</strong> &middot; Health &amp; Longevity &middot; Dublin, Ireland &middot; Company No. 670796</div>
-  <div class="footer-right">
-    <a href="mailto:hello@procohq.com" class="footer-link">hello@procohq.com</a>
-    <a href="https://x.com/procohq" class="footer-link">X / Twitter</a>
-    <a href="https://linkedin.com/company/procohq" class="footer-link">LinkedIn</a>
-    <a href="https://github.com/procohq" class="footer-link">GitHub</a>
+  <div class="footer-inner">
+    <div class="footer-logo">Pro<span>co</span></div>
+    <div class="footer-links"><a href="#pillars">Topics</a><a href="#articles">Articles</a><a href="#about">About</a><a href="mailto:johnny@procohq.com">Contact</a><a href="https://x.com/procohq" target="_blank">X / Twitter</a><a href="https://linkedin.com/company/procohq" target="_blank">LinkedIn</a></div>
+    <p class="footer-copy">© 2026 Proco Technologies Limited. The intersection of health & technology.</p>
   </div>
 </footer>
+<script>
+  const HS_PORTAL_ID = '6067029';
+  const HS_FORM_GUID = 'YOUR_HUBSPOT_FORM_GUID';
+  async function handleSubmit(e, id) {
+    e.preventDefault();
+    const email = e.target.querySelector('input[type="email"]').value.trim();
+    if (HS_FORM_GUID !== 'YOUR_HUBSPOT_FORM_GUID') {
+      try { await fetch('https://api.hsforms.com/submissions/v3/integration/submit/' + HS_PORTAL_ID + '/' + HS_FORM_GUID, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: [{ objectTypeId: '0-1', name: 'email', value: email }], context: { pageUri: window.location.href } }) }); } catch(err) {}
+    }
+    e.target.style.display = 'none';
+    document.getElementById(id + '-success').style.display = 'block';
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if (t) { e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); } }); });
+</script>
 </body>
 </html>
