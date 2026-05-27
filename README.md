@@ -1,51 +1,29 @@
 # procohq
 
-**The future of finance is on-chain.**
+Proco marketing website — [procohq.com](https://procohq.com).
 
-Programmable money for builders, traders, treasuries, and the autonomous agents that come next. Wallets, payments, settlement, and treasury — open, programmable, multi-chain.
+> Proco is a healthtech company at the intersection of health and technology. We publish evidence-based content on longevity, performance, sleep, and nutrition — and we're building AI-powered tools to help people act on it.
 
-→ [procohq.com](https://procohq.com)
+**Live longer. Perform better.**
 
----
+## About
 
-## What Proco is
+This repo contains the source code for [procohq.com](https://procohq.com).
 
-Proco is the on-chain programmable money platform. Non-custodial wallets, programmable conditions (`pay_when`, `pay_if`, `sweep_when`), instant settlement on Base / Solana / Hyperliquid, and a marketplace for on-chain services.
+- Built with HTML/CSS/JS, deployed via Replit
+- Single-page site — no framework dependencies
+- Design tokens: cream background (#ECEAE3), ink black (#0C0B09), Inter typeface
 
-- **Wallets** — non-custodial, multi-chain, owned by their principal (human, business, bot, or agent)
-- **Programmable conditions** — `pay_when`, `pay_if`, `sweep_when` at the API level
-- **Payments and settlement** — on-chain by default, transparent fees, instant USDC settlement
-- **Treasury automation** — auto-rebalancing, yield routing, drawdown caps, threshold triggers
-- **Catalog** — a marketplace for on-chain services any wallet can pay for
-- **x402 compatible** — native support for the machine-to-machine payment protocol backed by Coinbase, Google, Anthropic, Visa, and AWS
+## Status
 
-## For developers
-
-```bash
-npm install @proco/sdk
-```
-
-```javascript
-import Proco from '@proco/sdk';
-
-const proco = new Proco({ apiKey: process.env.PROCO_KEY });
-
-const tx = await proco.payments.create({
-  amount: 100,
-  currency: 'USDC',
-  to: wallet.address,
-  trigger: { event: 'invoice.due' }
-});
-// → settled in 8.2s · on-chain · transparent fees
-```
+Phase 1 — Content engine. Publishing evidence-based health and longevity content to build an audience before shipping AI tools.
 
 ## Links
 
-- [procohq.com](https://procohq.com) — main site
-- [procohq.com/protocol](https://procohq.com/protocol) — protocol docs
-- [Open-source SDK](https://github.com/procohq/proco-sdk) — TypeScript client
-- [Start building free](https://procohq.com/sign-in) — free sandbox, no credit card
+- [procohq.com](https://procohq.com) — live site
+- [@procohq](https://x.com/procohq) — X/Twitter
+- [Proco on LinkedIn](https://linkedin.com/company/procohq)
 
----
+## License
 
-The future of finance is on-chain. Proco is building the layer.
+MIT
